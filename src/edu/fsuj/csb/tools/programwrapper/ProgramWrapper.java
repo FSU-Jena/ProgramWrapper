@@ -55,7 +55,7 @@ public class ProgramWrapper {
 	/**/     } catch (IOException e) {
 	/**/       e.printStackTrace();
 	/**/     }
-	/**/   }
+	/**/   }	
 	/**/
 	/**/   private void alert(String line,BufferedWriter processWriter) {
 	/**/	   sb.append(line+'\n');
@@ -100,8 +100,13 @@ public class ProgramWrapper {
 		process=Runtime.getRuntime().exec(command); // actually execute the program
 		
 	// open writers and readers:
+		
+		
+		// used to pass parameters to the program
 		OutputStreamWriter osw=new OutputStreamWriter(process.getOutputStream()); 
 		BufferedWriter bw = new BufferedWriter(osw);
+		
+		// used to read program output
 		outputStreamThread.start(bw,new BufferedReader(new InputStreamReader(process.getInputStream())));
 		errorStreamThread.start(bw,new BufferedReader(new InputStreamReader(process.getErrorStream())));
 		
@@ -139,7 +144,19 @@ public class ProgramWrapper {
 		//System.out.println("ProgramWrapper.startAndWait("+parameters+")");		
 		startAndContinue(parameters);
 		process.waitFor();
+		int l=0;
+		sleep10();
+		while (sb.length()>l) {
+			l=sb.length();
+			sleep10();
+		}
 	}
+
+	private void sleep10() {
+		try {
+	    Thread.sleep(10);
+    } catch (InterruptedException e) {}	  
+  }
 
 	/**
 	 * start the program and wit for it to continue
@@ -188,7 +205,7 @@ public class ProgramWrapper {
   }
 
 	/**
-	 * this method just calls startAndWait() and ist just here for compatibility with older versions
+	 * this method just calls startAndWait() and is just here for compatibility with older versions
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
